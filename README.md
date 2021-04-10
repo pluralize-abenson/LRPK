@@ -13,3 +13,14 @@ Alexander Benson
 
 
 *Edit ReadMe to reflect any edits you make. Please be mindful that others need to parse your code*
+
+## Setup for contributing to the project
+
+Make sure you have a pretty modern Python 3.6/7/8 or something. I tried with 3.5.5 and had a syntax error.
+
+1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) this repository so you have your own copy.
+2. [Clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) your forked repository to your local machine.
+3. `cd` into the directory and run `pip install -e .`
+4. Run `main.py` to test that your setup is working `python main.py`
+
+When you make a change, `git add`, `git commit`, and `git push` to your fork. When you're ready to submit your changes to this repo, create a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests).

@@ -1,8 +1,8 @@
 # main.py, for install verification
 
-# MME565 LRPK E2.9
+# LRPK LRPK E2.9
 
-import MME565
+import LRPK
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -28,11 +28,11 @@ free_workspace_vertices = [
     [7, 20]
 ]
 
-polygon = MME565.Polygon(polygon_vertices)
-free_workspace = MME565.Polygon(free_workspace_vertices)
+polygon = LRPK.Polygon(polygon_vertices)
+free_workspace = LRPK.Polygon(free_workspace_vertices)
 
 # conduct trapezoidation over free workspace and polygon
-trapezoids = MME565.trapezoidation(free_workspace, [polygon])
+trapezoids = LRPK.trapezoidation(free_workspace, [polygon])
 
 # plot convex / non-convex vertices
 fig, ax = plt.subplots()
