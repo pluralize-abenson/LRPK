@@ -7,4 +7,4 @@ Ariful Islam
 Jonathon Carstens
 Alexander Benson
 
-*Edit Read me to reflect any edits you make. Please be mindful that others need to parse your code*
+*Edit ReadMe to reflect any edits you make. Please be mindful that others need to parse your code*
