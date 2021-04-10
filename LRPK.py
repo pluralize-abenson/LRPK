@@ -393,7 +393,7 @@ def trapezoidation(workspace: Polygon, obstacles: list):
     """Trapezoidation of a non-convex workspace. Obstacles must be at least one closed polygon."""
     for polygon in obstacles:
         ordered_vertices = polygon.vertices
-        ordered_vertices.sort(key=lambda x: x.x)
+        ordered_vertices.sort(key=lambda x: x.x)  # order the vertex list from small x to large x
 
     # set l1, l2, r1, r2 based on free workspace corners
     l1 = Point(min(workspace.vertex_array[..., 0]), max(workspace.vertex_array[..., 1]))
@@ -426,7 +426,7 @@ def trapezoidation(workspace: Polygon, obstacles: list):
             else:
                 intersections = []
                 temp_segments = []
-                S.sort(key=lambda y: y.mid_point.y)
+                S.sort(key=lambda y: y.mid_point.y)  # sort the list of intersected polygon segments bottom to top
                 print("ordered S:", S)
 
                 if vertex.y > S[-2].mid_point.y:  # S ordered lowest to highest
