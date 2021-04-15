@@ -415,42 +415,47 @@ def trapezoidation(workspace: Polygon, obstacles: list):
     for vertex in ordered_vertices:
 
         if vertex.type == "i":
-            pt = Point(vertex.x, l1.y)
-            pb = Point(vertex.x, l2.y)
-            sweeping_segment = Segment(pt, pb)
-            print("vertex i encountered")
-            if len(S) == 2:  # sweeping segment only intersects this vertex, no other polygon segments
-                T.append(Trapezoid([pt, l1, l2, pb]))
-                l1 = pt
-                l2 = pb
-            else:
-                intersections = []
-                temp_segments = []
-                S.sort(key=lambda y: y.mid_point.y)  # sort the list of intersected polygon segments bottom to top
-                print("ordered S:", S)
+ 
+            S.sort(key=lambda y: y.mid_point.y, reverse=True)  # S ordered highest to lowest (top to bottom)
 
-                if vertex.y > S[-2].mid_point.y:  # S ordered lowest to highest
-                    p_int = line_intersection(sweeping_segment, S[-2])
-                    if S[-2].p1.x < S[-2].p2.x:
-                        T.append(Trapezoid([pt, l1, S[-2].p1, p_int]))
-                    else:
-                        T.append(Trapezoid([pt, l1, S[-2].p2, p_int]))
-                if vertex.y < S[1].mid_point.y:  # S ordered lowest to highest
-                    p_int = line_intersection(sweeping_segment, S[1])
-                    if S[1].p1.x < S[1].p2.x:
-                        T.append(Trapezoid([pb, l2, S[1].p1, p_int]))
-                    else:
-                        T.append(Trapezoid([pb, l2, S[1].p2, p_int]))
+            for i in range(len(S) - 1):  # identify which two segments are above and below vertex
+                if S[i].mid_point.y > vertex.y:  # above
+                    if S[i+1].mid_point.y < vertex.y: # and below
+                        if S[i].p1.x < S[i].p2.x:  # figure out which vertex of the top segment is on the left
+                            top_left = S[i].p1
+                        else:
+                            top_left = S[i].p2
 
-                l1 = pt
-                l2 = pb
+                        if S[i+1].p1.x < S[i+1].p2.x:  # figure out which vertex of the bottom segment is on the left
+                            bottom_left = S[i+1].p1
+                        else:
+                            bottom_left = S[i+1].p2
+
+                        # append the trapezoid to T
+                        T.append(Trapezoid([
+                            line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y - 1])),  # sweeping line and lower
+                            line_intersection(S[i], Line(vertex, [vertex.x, vertex.y + 1])),  # sweeping line and upper
+                            top_left,
+                            bottom_left,
+                            ]))
+
+                        # adjust segments inside S to trim off "used" portion
+                        if S[i].p1.x < S[i].p2.x:
+                            S[i] = Segment(line_intersection(S[i], Line(vertex, [vertex.x, vertex.y + 1])), S[i].p2)
+                        else:
+                            S[i] = Segment(line_intersection(S[i], Line(vertex, [vertex.x, vertex.y + 1])), S[i].p1)
+
+                        if S[i+1].p1.x < S[i+1].p2.x:
+                            S[i+1] = Segment(line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y - 1])), S[i+1].p2)
+                        else:
+                            S[i+1] = Segment(line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y - 1])), S[i+1].p1)
+
 
             # adjust S according to LRPK rules
             for polygon in obstacles:
                 for segment in polygon.segments:
                     if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
                         S.append(segment)
-            print("S:", S)
 
         elif vertex.type == "ii":
             print("vertex ii encountered")
@@ -466,87 +471,43 @@ def trapezoidation(workspace: Polygon, obstacles: list):
             print("vertex iii encountered")
 
             # adjust S according to LRPK rules
-            for polygon in obstacles:
-                for segment in polygon.segments:
-                    if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
-                        S.remove(segment)
-            print("S:", S)
-
-
+            for segment in S:
+                if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
+                    S.remove(segment)
 
         elif vertex.type == "iv":
             print("vertex iv encountered")
 
             # adjust S according to LRPK rules
-            for polygon in obstacles:
-                for segment in polygon.segments:
-                    if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
-                        S.remove(segment)
-
-            # create trapezoid
+            for segment in S:
+                if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
+                    S.remove(segment)
 
         elif vertex.type == "v":
             print("vertex v encountered")
 
-            # create trapezoid
-            pt = Point(vertex.x, l1.y)
-            pb = Point(vertex.x, l2.y)
-
-            for segment in polygon.segments:
-                if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
-                    if vertex.x > segment.p1.x or vertex.x > segment.p2.x:
-                        if segment.p1.x < segment.p2.x:
-                            ls = segment.p1
-                            l2 = Point(segment.p1.x, l2.y)
-                        else:
-                            ls = segment.p2
-                            l2 = Point(segment.p1.x, l2.y)
-            T.append(Trapezoid([vertex, ls, l2, pb]))
-
-            print(T[-1])
-
-            l2 = pb
-
             # adjust S according to LRPK rules
             for polygon in obstacles:
                 for segment in polygon.segments:
                     if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
                         if vertex.x > segment.p1.x or vertex.x > segment.p2.x:
                             S.remove(segment)
-                        else:
-                            S.append(segment)
-            print("S:", S)
+            for segment in S:
+                if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
+                    S.append(segment)
 
         elif vertex.type == "vi":
             print("vertex vi encountered")
 
-            # create trapezoid
-            pt = Point(vertex.x, l1.y)
-            pb = Point(vertex.x, l2.y)
-
-            for segment in polygon.segments:
-                if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
-                    if vertex.x > segment.p1.x or vertex.x > segment.p2.x:
-                        if segment.p1.x < segment.p2.x:
-                            ls = segment.p1
-                            l2 = Point(segment.p1.x, l2.y)
-                        else:
-                            ls = segment.p2
-                            l2 = Point(segment.p1.x, l2.y)
-            T.append(Trapezoid([pt, l1, ls, vertex]))
-
-            l1 = pt
-            l2 = pb
-
             # adjust S according to LRPK rules
             for polygon in obstacles:
                 for segment in polygon.segments:
                     if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
                         if vertex.x > segment.p1.x or vertex.x > segment.p2.x:
                             S.remove(segment)
-                        else:
-                            S.append(segment)
-            print("S:", S)
+            for segment in S:
+                if vertex.cartesian == segment.p1.cartesian or vertex.cartesian == segment.p2.cartesian:
+                    S.append(segment)
 
     return T
 
