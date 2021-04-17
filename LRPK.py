@@ -497,61 +497,49 @@ def trapezoidation(workspace: Polygon, obstacles: list):
             #                     bottom_left = S[i].p2
 
             #                 # append the trapezoid to T
-            #                 if top_left == bottom_left:
-            #                     T.append(Trapezoid([
-            #                         vertex,
-            #                         line_intersection(S[i-1], Line(vertex, [vertex.x, vertex.y + 1])),  # sweeping line and lower
-            #                         top_left,
-            #                         ]))
-            #                 else:
-            #                     T.append(Trapezoid([
-            #                         vertex,
-            #                         line_intersection(S[i-1], Line(vertex, [vertex.x, vertex.y + 1])),  # sweeping line and lower
-            #                         top_left,
-            #                         bottom_left,
-            #                         ]))
+            #                 T.append(Trapezoid([
+            #                     vertex,
+            #                     line_intersection(S[i-1], Line(vertex, [vertex.x, vertex.y + 1])),  # sweeping line and lower
+            #                     top_left,
+            #                     bottom_left,
+            #                     ]))
 
             #                 # adjust segments inside S to trim off "used" portion
-            #                 if S[i-1].p1.x < S[i-1].p2.x:
-            #                     S[i-1] = Segment(line_intersection(S[i-1], Line(vertex, [vertex.x, vertex.y + 1])), S[i-1].p2)
-            #                 else:
-            #                     S[i-1] = Segment(line_intersection(S[i-1], Line(vertex, [vertex.x, vertex.y + 1])), S[i-1].p1)
+            #                 if S[i-1].p1.x != vertex or S[i-1].p2.x != vertex:
+            #                     if S[i-1].p1.x < S[i-1].p2.x:
+            #                         S[i-1] = Segment(line_intersection(S[i-1], Line(vertex, [vertex.x, vertex.y + 1])), S[i-1].p2)
+            #                     else:
+            #                         S[i-1] = Segment(line_intersection(S[i-1], Line(vertex, [vertex.x, vertex.y + 1])), S[i-1].p1)
                         
-                        # # check if a vertical segment below the vertex is outside the polygon
-                        # if not polygon.check_point_inside_polygon(Segment(
-                        #     vertex,
-                        #     line_intersection((Line(vertex, [vertex.x, vertex.y + 1])), S[i+1])
-                        # ).mid_point):
-                        #     if S[i].p1.x < S[i].p2.x:  # figure out which vertex of the top (vertex) segment is on the left
-                        #         top_left = S[i].p1
-                        #     else:
-                        #         top_left = S[i].p2
+            #             # check if a vertical segment below the vertex is outside the polygon
+            #             if not polygon.check_point_inside_polygon(Segment(
+            #                 vertex,
+            #                 line_intersection((Line(vertex, [vertex.x, vertex.y + 1])), S[i+1])
+            #             ).mid_point):
+            #                 if S[i].p1.x < S[i].p2.x:  # figure out which vertex of the top (vertex) segment is on the left
+            #                     top_left = S[i].p1
+            #                 else:
+            #                     top_left = S[i].p2
 
-                        #     if S[i+1].p1.x < S[i+1].p2.x:  # figure out which vertex of the bottom segment is on the left
-                        #         bottom_left = S[i+1].p1
-                        #     else:
-                        #         bottom_left = S[i+1].p2
+            #                 if S[i+1].p1.x < S[i+1].p2.x:  # figure out which vertex of the bottom segment is on the left
+            #                     bottom_left = S[i+1].p1
+            #                 else:
+            #                     bottom_left = S[i+1].p2
 
-                        #     # append the trapezoid to T
-                        #     if top_left == bottom_left:
-                        #         T.append(Trapezoid([
-                        #             line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y - 1])),  # sweeping line and lower
-                        #             vertex,
-                        #             bottom_left,
-                        #             ]))
-                        #     else:
-                        #         T.append(Trapezoid([
-                        #             line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y - 1])),  # sweeping line and lower
-                        #             vertex,
-                        #             top_left,
-                        #             bottom_left,
-                        #             ]))
+            #                 # append the trapezoid to T
+            #                 T.append(Trapezoid([
+            #                     line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y - 1])),  # sweeping line and lower
+            #                     vertex,
+            #                     top_left,
+            #                     bottom_left,
+            #                     ]))
 
-                        #     # adjust segments inside S to trim off "used" portion
-                        #     if S[i+1].p1.x < S[i+1].p2.x:
-                        #         S[i+1] = Segment(line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y + 1])), S[i+1].p2)
-                        #     else:
-                        #         S[i+1] = Segment(line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y + 1])), S[i+1].p1)
+            #                 # adjust segments inside S to trim off "used" portion
+            #                 if S[i+1].p1.x != vertex or S[i+1].p2.x != vertex:
+            #                     if S[i+1].p1.x < S[i+1].p2.x:
+            #                         S[i+1] = Segment(line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y + 1])), S[i+1].p2)
+            #                     else:
+            #                         S[i+1] = Segment(line_intersection(S[i+1], Line(vertex, [vertex.x, vertex.y + 1])), S[i+1].p1)
 
 
             # adjust S according to LRPK rules
@@ -566,8 +554,6 @@ def trapezoidation(workspace: Polygon, obstacles: list):
                 if segment != None:
                     new_S.append(segment)
             S = new_S
-
-
 
         elif vertex.type == "iv":
             print("vertex iv encountered")
